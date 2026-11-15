@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Два года вместе — Наш маленький мир</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF6F0',
+            creamDeep: '#F3E4D7',
+            ivory: '#FFFDF9',
+            terracotta: '#D88C7E',
+            terracottaHover: '#C47466',
+            antiqueGold: '#C5A065',
+            coffee: '#3B2F2F',
+            taupe: '#7A6863',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            hand: ['"Caveat"', 'cursive'],
+            sans: ['"Montserrat"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg-cream: #FAF6F0;
+      --bg-glow: #F3E4D7;
+      --card-ivory: #FFFDF9;
+      --accent-rose: #D88C7E;
+      --accent-rose-hover: #C47466;
+      --accent-gold: #C5A065;
+      --text-coffee: #3B2F2F;
+      --text-taupe: #7A6863;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-cream);
+      background-image:
+        radial-gradient(circle at 18% 12%, rgba(243, 228, 215, 0.95) 0%, transparent 48%),
+        radial-gradient(circle at 84% 38%, rgba(216, 140, 126, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 25% 78%, rgba(197, 160, 101, 0.14) 0%, transparent 50%),
+        radial-gradient(circle at 80% 90%, rgba(243, 228, 215, 0.9) 0%, transparent 52%);
+      color: var(--text-coffee);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    body.locked {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .paper-grain-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.34;
+      mix-blend-mode: multiply;
+    }
+
+    #password-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background-color: var(--bg-cream);
+      background-image:
+        radial-gradient(circle at 50% 35%, #F6EAE0 0%, #FAF6F0 68%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+                  visibility 0.95s ease;
+    }
+
+    #password-gate.unlocked {
+      opacity: 0;
+      transform: translateY(-28px) scale(1.02);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .gate-card {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 253, 249, 0.92);
+      border: 1px solid rgba(197, 160, 101, 0.5);
+      border-radius: 24px;
+      padding: 2.5rem 1.75rem;
+      box-shadow:
+        0 24px 60px -15px rgba(59, 47, 47, 0.12),
+        0 4px 16px rgba(197, 160, 101, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .gate-card::before {
+      content: '';
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(197, 160, 101, 0.28);
+      border-radius: 17px;
+      pointer-events: none;
+    }
+
+    @keyframes gentleShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    .shake-error {
+      animation: gentleShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    .turntable-stage {
+      position: relative;
+      width: 290px;
+      height: 290px;
+      margin: 0 auto;
+      user-select: none;
+    }
+
+    @media (min-width: 640px) {
+      .turntable-stage {
+        width: 350px;
+        height: 350px;
+      }
+    }
+
+    /* Мягкая тень под пластинкой */
+    .vinyl-shadow {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      box-shadow:
+        0 26px 50px -10px rgba(38, 28, 25, 0.35),
+        0 10px 22px -6px rgba(59, 47, 47, 0.22);
+      pointer-events: none;
+    }
+
+    /* Вращающийся диск винила */
+    .vinyl-disc {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #1D1A19;
+      /* Концентрические звуковые дорожки */
+      background-image:
+        repeating-radial-gradient(
+          circle at center,
+          rgba(255, 255, 255, 0.03) 0px,
+          rgba(255, 255, 255, 0.03) 1px,
+          rgba(16, 14, 13, 0.92) 2px,
+          rgba(29, 26, 25, 0.98) 4px
+        );
+      border: 4px solid #2A2523;
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: vinylSpin 14s linear infinite;
+      animation-play-state: paused;
+      transition: transform 0.35s ease;
+    }
+
+    .vinyl-disc.is-playing {
+      animation-play-state: running;
+    }
+
+    .vinyl-disc:hover {
+      transform: scale(1.015);
+    }
+
+    @keyframes vinylSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Неподвижный световой блик поверх крутящейся пластинки (создаёт эффект настоящего глянца) */
+    .vinyl-sheen {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 35deg,
+        transparent 0deg,
+        rgba(255, 248, 238, 0.13) 28deg,
+        transparent 62deg,
+        transparent 180deg,
+        rgba(255, 248, 238, 0.1) 208deg,
+        transparent 245deg,
+        transparent 360deg
+      );
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Внутренняя канавка перед яблочком */
+    .vinyl-inner-groove {
+      position: relative;
+      width: 44%;
+      height: 44%;
+      border-radius: 50%;
+      border: 2px solid rgba(197, 160, 101, 0.55);
+      box-shadow: 0 0 0 6px rgba(15, 13, 12, 0.8);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F3E4D7;
+      z-index: 2;
+    }
+
+    .vinyl-label-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: sepia(12%) contrast(98%) brightness(94%);
+    }
+
+    /* Затемняющее кольцо на этикетке для читаемости названия песни */
+    .vinyl-label-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at center,
+        rgba(38, 28, 25, 0.25) 0%,
+        rgba(38, 28, 25, 0.55) 100%
+      );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12% 10%;
+      text-align: center;
+    }
+
+    /* Центральное отверстие пластинки (шпиндель) */
+    .vinyl-spindle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #FAF6F0;
+      border: 2px solid #C5A065;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+      z-index: 5;
+    }
+
+    /* Тонарм (звукосниматель) из розового золота */
+    .tonearm-assembly {
+      position: absolute;
+      top: -12px;
+      right: -18px;
+      width: 110px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 10;
+      /* Ось вращения совпадает с центром шарнира в SVG (x=76, y=34) */
+      transform-origin: 76px 34px;
+      transform: rotate(-26deg);
+      transition: transform 1.15s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+
+    @media (min-width: 640px) {
+      .tonearm-assembly {
+        top: -8px;
+        right: -24px;
+        width: 126px;
+        height: 252px;
+        transform-origin: 87px 39px;
+      }
+    }
+
+    .tonearm-assembly.is-playing {
+      transform: rotate(6deg);
+    }
+
+    /* =====================================================================
+       3D ОРБИТАЛЬНАЯ ГАЛЕРЕЯ ПОЛАРОИДОВ С ПЕРЕВОРОТОМ НА 180°
+       ===================================================================== */
+    .carousel-viewport {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      perspective: 1450px;
+      touch-action: pan-y;
+      user-select: none;
+      cursor: grab;
+    }
+
+    @media (min-width: 640px) {
+      .carousel-viewport {
+        height: 400px;
+      }
+    }
+
+    .carousel-viewport:active {
+      cursor: grabbing;
+    }
+
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Позиционируемый слот карточки на орбите */
+    .polaroid-slot {
+      position: absolute;
+      width: 150px;
+      height: 210px;
+      will-change: transform, opacity;
+      transition: box-shadow 0.3s ease;
+    }
+
+    @media (min-width: 640px) {
+      .polaroid-slot {
+        width: 175px;
+        height: 245px;
+      }
+    }
+
+    /* Внутренний контейнер для 3D-переворота (Front / Back) */
+    .polaroid-flipper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1);
+      cursor: pointer;
+    }
+
+    .polaroid-slot.is-flipped .polaroid-flipper {
+      transform: rotateY(180deg);
+    }
+
+    /* Общие стили лицевой и оборотной стороны карточки */
+    .polaroid-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background-color: var(--card-ivory);
+      border: 1px solid rgba(197, 160, 101, 0.32);
+      border-radius: 16px;
+      box-shadow:
+        0 18px 38px -10px rgba(59, 47, 47, 0.18),
+        0 4px 12px rgba(59, 47, 47, 0.06);
+      padding: 13px 13px 16px 13px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+      .polaroid-face {
+        padding: 15px 15px 20px 15px;
+      }
+    }
+
+    /* Лицевая сторона полароида */
+    .polaroid-front {
+      justify-content: space-between;
+    }
+
+    .polaroid-photo-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 4.35;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #EFE5D8;
+      box-shadow: inset 0 0 12px rgba(59, 47, 47, 0.08);
+    }
+
+    .polaroid-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      transition: transform 0.6s ease;
+    }
+
+    .polaroid-slot:hover .polaroid-photo-frame img {
+      transform: scale(1.03);
+    }
+
+    /* Оборотная сторона полароида (почтовая открытка с заметкой) */
+    .polaroid-back {
+      transform: rotateY(180deg);
+      background-color: #FCF8F1;
+      background-image:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 27px,
+          rgba(197, 160, 101, 0.2) 28px
+        );
+      justify-content: space-between;
+      padding: 18px 18px 16px 18px;
+    }
+
+    /* =====================================================================
+       ПЛАВНОЕ ПОЯВЛЕНИЕ ПРИ ПРОКРУТКЕ И ТЁПЛЫЕ КНОПКИ
+       ===================================================================== */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-warm {
+      background-color: var(--accent-rose);
+      color: #FFFDF9;
+      border-radius: 9999px;
+      box-shadow: 0 10px 24px -6px rgba(216, 140, 126, 0.55);
+      transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .btn-warm:hover {
+      background-color: var(--accent-rose-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -6px rgba(196, 116, 102, 0.62);
+    }
+
+    .btn-warm:active {
+      transform: translateY(0);
+    }
+
+    /* Компактный плавающий мини-плеер в правом нижнем углу */
+    .mini-player {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 8000;
+      background: rgba(255, 253, 249, 0.9);
+      border: 1px solid rgba(197, 160, 101, 0.42);
+      border-radius: 9999px;
+      box-shadow: 0 14px 34px -8px rgba(59, 47, 47, 0.2);
+      backdrop-filter: blur(12px);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .mini-player.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Стилизация ползунка громкости */
+    input[type="range"].warm-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 64px;
+      height: 4px;
+      background: rgba(197, 160, 101, 0.35);
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].warm-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent-rose);
+      border: 2px solid #FFFDF9;
+      box-shadow: 0 1px 4px rgba(59, 47, 47, 0.3);
+      cursor: pointer;
+    }
+
+    /* Фоновый холст для мягких золотистых огоньков и лепестков */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+    }
+
+    #ambient-canvas.is-active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="locked">
+
+  <!-- =======================================================================
+       ТАКТИЛЬНЫЙ СЛОЙ БУМАЖНОЙ ЗЕРНИСТОСТИ (SVG NOISE OVERLAY)
+       ======================================================================= -->
+  <svg class="paper-grain-overlay" aria-hidden="true">
+    <filter id="vintage-paper-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#vintage-paper-noise)" />
+  </svg>
+
+  <!-- Холст для парящих золотистых огоньков (боке) и нежных лепестков при игре музыки -->
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- =======================================================================
+       1. ЭКРАН ВХОДА ПО ПАРОЛЮ (PASSWORD GATE)
+       ======================================================================= -->
+  <section id="password-gate" aria-label="Вход по секретному паролю">
+    <div id="gate-card" class="gate-card text-center">
+      <!-- Деликатный золотой орнамент сверху -->
+      <div class="flex justify-center mb-4 text-antiqueGold">
+        <svg width="42" height="24" viewBox="0 0 42 24" fill="none" aria-hidden="true">
+          <path d="M21 21C21 21 6 12.5 6 6.5C6 3.8 8.2 2 10.8 2C13.1 2 15.1 3.3 16 5.2C16.9 3.3 18.9 2 21.2 2C23.8 2 26 3.8 26 6.5C26 12.5 21 21 21 21Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" transform="translate(5, 0)"/>
+          <line x1="2" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+          <line x1="32" y1="12" x2="40" y2="12" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+
+      <p class="font-hand text-2xl text-antiqueGold mb-1">Для самой любимой</p>
+      <h1 class="font-serif text-3xl sm:text-4xl font-semibold text-coffee tracking-tight mb-2">
+        Наш маленький мир
+      </h1>
+      <p class="text-sm text-taupe leading-relaxed max-w-xs mx-auto mb-6">
+        Введи наш секретный пароль, чтобы открыть воспоминания
+      </p>
+
+      <!-- Форма ввода пароля -->
+      <form id="password-form" class="space-y-4" novalidate>
+        <div class="relative max-w-xs mx-auto">
+          <input
+            id="password-input"
+            type="password"
+            autocomplete="off"
+            placeholder="Секретный пароль..."
+            aria-label="Секретный пароль"
+            class="w-full bg-cream/80 border border-antiqueGold/45 focus:border-terracotta focus:ring-2 focus:ring-terracotta/20 rounded-2xl px-4 py-3.5 pr-12 text-center text-coffee placeholder-taupe/60 text-base outline-none transition"
+          />
+          <!-- Кнопка показать / скрыть пароль -->
+          <button
+            type="button"
+            id="toggle-password-visibility"
+            aria-label="Показать или скрыть пароль"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 p-2 text-taupe hover:text-coffee transition rounded-full"
+          >
+            <svg id="eye-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eye-icon-closed" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+              <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+              <line x1="2" y1="2" x2="22" y2="22"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Сообщение при неверном пароле -->
+        <p id="password-error" role="alert" class="text-xs font-medium text-terracottaHover min-h-[18px] opacity-0 transition-opacity duration-300">
+          Почти! Попробуй ещё раз...
+        </p>
+
+        <button
+          type="submit"
+          class="btn-warm w-full max-w-xs mx-auto py-3.5 px-8 text-sm font-medium tracking-wide cursor-pointer"
+        >
+          Открыть
+        </button>
+      </form>
+
+      <!-- Подсказка к паролю -->
+      <div class="mt-6 pt-4 border-t border-antiqueGold/20">
+        <button
+          type="button"
+          id="hint-toggle-btn"
+          class="text-xs text-taupe/80 hover:text-coffee underline decoration-antiqueGold/50 underline-offset-4 transition py-1 px-2"
+        >
+          Нужна подсказка?
+        </button>
+        <p id="password-hint-text" class="mt-1.5 text-xs text-taupe leading-relaxed max-w-xs mx-auto"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       ОСНОВНОЕ СОДЕРЖИМОЕ САЙТА-ОТКРЫТКИ
+       ======================================================================= -->
+  <main id="main-content" class="relative z-10">
+
+    <!-- =====================================================================
+         2. ПЕРВЫЙ ЭКРАН: «ВКЛЮЧИ АТМОСФЕРУ» И ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ
+         ===================================================================== -->
+    <header id="hero-section" class="min-h-screen flex flex-col items-center justify-center px-4 pt-12 pb-16 sm:py-16 text-center max-w-4xl mx-auto">
+      <!-- Верхняя деликатная подпись -->
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-ivory/80 border border-antiqueGold/35 shadow-sm mb-5">
+        <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>
+        <span id="hero-tagline" class="text-xs uppercase tracking-[0.18em] text-taupe font-medium">
+          730 дней вместе • Два года нашей истории
+        </span>
+        <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>
+      </div>
+
+      <!-- Главный заголовок -->
+      <h1 id="hero-title" class="font-serif text-4xl sm:text-6xl font-semibold text-coffee leading-[1.12] tracking-tight mb-3">
+        Два года рядом с тобой
+      </h1>
+      <p id="hero-subtitle" class="text-sm sm:text-base text-taupe max-w-md mx-auto leading-relaxed mb-9 sm:mb-11">
+        Маленький альбом наших тёплых дней, случайных улыбок и песен, которые теперь навсегда ассоциируются с тобой
+      </p>
+
+      <!-- Интерактивная виниловая пластинка с тонармом -->
+      <div class="turntable-stage mb-9 sm:mb-11">
+        <div class="vinyl-shadow"></div>
+
+        <!-- Сама вращающаяся пластинка -->
+        <div id="vinyl-disc" class="vinyl-disc" role="button" tabindex="0" aria-label="Включить или поставить на паузу нашу песню">
+          <!-- Центральное «яблочко» с фотографией пары и названием трека -->
+          <div class="vinyl-inner-groove">
+            <img
+              id="vinyl-cover-img"
+              src=""
+              alt="Обложка нашей пластинки"
+              class="vinyl-label-photo"
+            />
+            <div class="vinyl-label-overlay">
+              <span id="vinyl-song-artist" class="font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-ivory/90 truncate max-w-[90%]">
+                Наша мелодия
+              </span>
+              <span id="vinyl-song-title" class="font-hand text-base sm:text-lg leading-none text-ivory font-semibold drop-shadow truncate max-w-[92%]">
+                Два года любви
+              </span>
+            </div>
+            <div class="vinyl-spindle"></div>
+          </div>
+        </div>
+
+        <!-- Неподвижный блик на виниле -->
+        <div class="vinyl-sheen"></div>
+
+        <!-- Изящный тонарм (звукосниматель) из тёплого золота и терракоты -->
+        <svg id="tonearm" class="tonearm-assembly" viewBox="0 0 120 240" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="goldMetal" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E5C896"/>
+              <stop offset="50%" stop-color="#C5A065"/>
+              <stop offset="100%" stop-color="#9B773D"/>
+            </linearGradient>
+            <linearGradient id="roseMetal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#E8A598"/>
+              <stop offset="100%" stop-color="#C47466"/>
+            </linearGradient>
+          </defs>
+          <!-- Тень тонарма -->
+          <path d="M83 42 L83 128 Q83 148 68 164 L46 188" stroke="rgba(38,28,25,0.22)" stroke-width="6" stroke-linecap="round" transform="translate(-4, 6)"/>
+          <!-- База шарнира -->
+          <circle cx="83" cy="38" r="22" fill="#FFFDF9" stroke="url(#goldMetal)" stroke-width="2.5"/>
+          <circle cx="83" cy="38" r="14" fill="url(#goldMetal)"/>
+          <!-- Противовес -->
+          <rect x="74" y="8" width="18" height="14" rx="4" fill="#3B2F2F" stroke="url(#goldMetal)" stroke-width="1.5"/>
+          <!-- Изогнутая трубка тонарма -->
+          <path d="M83 38 L83 126 Q83 146 68 162 L46 186" stroke="url(#goldMetal)" stroke-width="4.5" stroke-linecap="round"/>
+          <!-- Шелл и звукосниматель (картридж) -->
+          <g transform="translate(46, 186) rotate(42)">
+            <rect x="-6" y="-3" width="12" height="22" rx="3" fill="url(#roseMetal)" stroke="#FFFDF9" stroke-width="1"/>
+            <circle cx="0" cy="17" r="2.2" fill="#FFFDF9"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Кнопка-приглашение запустить музыку -->
+      <div class="flex flex-col items-center gap-3">
+        <button
+          type="button"
+          id="hero-play-btn"
+          class="btn-warm inline-flex items-center gap-3 px-7 py-4 text-sm sm:text-base font-medium tracking-wide cursor-pointer"
+        >
+          <span id="hero-play-icon" class="flex items-center justify-center w-6 h-6 rounded-full bg-ivory/20">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6,4 20,12 6,20"/>
+            </svg>
+          </span>
+          <span id="hero-play-label">Включи нашу песню и листай вниз</span>
+        </button>
+
+        <span id="audio-status-note" class="text-xs text-taupe/75 h-4 transition-opacity"></span>
+      </div>
+
+      <!-- Ненавязчивый индикатор прокрутки вниз -->
+      <a href="#gallery-section" aria-label="Перейти к фотографиям" class="mt-10 sm:mt-12 text-taupe/70 hover:text-coffee transition flex flex-col items-center gap-1.5 group">
+        <span class="font-hand text-xl">Листай дальше</span>
+        <svg class="w-5 h-5 animate-bounce text-antiqueGold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </a>
+    </header>
+
+    <!-- =====================================================================
+         3. ВТОРОЙ БЛОК: КРУТЯЩАЯСЯ 3D-ГАЛЕРЕЯ С «ИЗНАНКОЙ»
+         ===================================================================== -->
+    <section id="gallery-section" class="py-14 sm:py-20 px-4 max-w-6xl mx-auto overflow-hidden">
+      <div class="text-center max-w-xl mx-auto mb-6 sm:mb-8 reveal-on-scroll">
+        <p class="font-hand text-2xl sm:text-3xl text-terracotta mb-1">7 кадров из нашей жизни</p>
+        <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-coffee mb-3">
+          Моменты, которые хочется пересматривать
+        </h2>
+        <p class="text-xs sm:text-sm text-taupe leading-relaxed">
+          Нажми на любую фотографию, чтобы перевернуть её и прочитать заметку на обороте
+        </p>
+      </div>
+
+      <!-- 3D-орбитальная сцена с карточками-полароидами -->
+      <div id="carousel-viewport" class="carousel-viewport reveal-on-scroll" aria-label="Крутящаяся галерея воспоминаний">
+        <div id="carousel-stage" class="carousel-stage">
+          <!-- Карточки генерируются автоматически из SITE_CONFIG.photos -->
+        </div>
+      </div>
+
+      <!-- Панель управления галереей: Назад / Авто-вращение / Вперёд -->
+      <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 reveal-on-scroll">
+        <button
+          type="button"
+          id="carousel-prev-btn"
+          aria-label="Предыдущее фото"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ivory/90 border border-antiqueGold/40 text-coffee text-xs sm:text-sm hover:border-terracotta hover:text-terracottaHover transition shadow-sm cursor-pointer"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          <span>Назад</span>
+        </button>
+
+        <button
+          type="button"
+          id="carousel-auto-btn"
+          aria-label="Пауза или запуск вращения галереи"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ivory/90 border border-antiqueGold/40 text-taupe text-xs sm:text-sm hover:border-terracotta hover:text-coffee transition shadow-sm cursor-pointer"
+        >
+          <span id="carousel-auto-dot" class="w-2 h-2 rounded-full bg-terracotta animate-pulse"></span>
+          <span id="carousel-auto-label">Пауза вращения</span>
+        </button>
+
+        <button
+          type="button"
+          id="carousel-next-btn"
+          aria-label="Следующее фото"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ivory/90 border border-antiqueGold/40 text-coffee text-xs sm:text-sm hover:border-terracotta hover:text-terracottaHover transition shadow-sm cursor-pointer"
+        >
+          <span>Вперёд</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <footer class="pt-6 pb-24 px-5 max-w-xl mx-auto text-center reveal-on-scroll">
+      <div class="w-24 h-px bg-antiqueGold/50 mx-auto mb-8"></div>
+
+      <p id="footer-quote" class="font-serif italic text-2xl sm:text-3xl text-coffee mb-8 leading-relaxed">
+        Два года — и это только начало нашей истории. А подарок в диване на кухне.
+      </p>
+
+      <button
+        type="button"
+        id="scroll-top-btn"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ivory/90 border border-antiqueGold/45 text-coffee text-xs sm:text-sm font-medium hover:border-terracotta hover:text-terracottaHover transition shadow-sm cursor-pointer"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 15l-6-6-6 6"/>
+        </svg>
+        <span>Вернуться к пластинке</span>
+      </button>
+    </footer>
+  </main>
+
+  <!-- =======================================================================
+       КОМПАКТНЫЙ МИНИ-ПЛЕЕР В ПРАВОМ НИЖНЕМ УГЛУ (ПОЯВЛЯЕТСЯ ПРИ ИГРЕ МУЗЫКИ)
+       ======================================================================= -->
+  <aside id="mini-player" class="mini-player" aria-label="Управление фоновой музыкой">
+    <button
+      type="button"
+      id="mini-play-btn"
+      aria-label="Пауза или воспроизведение"
+      class="w-9 h-9 rounded-full bg-terracotta hover:bg-terracottaHover text-ivory flex items-center justify-center transition cursor-pointer shrink-0"
+    >
+      <svg id="mini-icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1"/>
+        <rect x="14" y="4" width="4" height="16" rx="1"/>
+      </svg>
+      <svg id="mini-icon-play" class="hidden" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="6,4 20,12 6,20"/>
+      </svg>
+    </button>
+
+    <div class="hidden sm:flex flex-col text-left pr-1 max-w-[135px]">
+      <span class="text-[10px] text-taupe truncate">Фоновая мелодия</span>
+    </div>
+
+    <div class="flex items-center gap-1.5 pl-1 border-l border-antiqueGold/25">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-taupe shrink-0">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      <input
+        type="range"
+        id="volume-slider"
+        class="warm-slider"
+        min="0"
+        max="1"
+        step="0.02"
+        value="0.75"
+        aria-label="Громкость музыки"
+      />
+    </div>
+  </aside>
+
+  <!-- Скрытый HTML5 аудиоэлемент для вашего трека -->
+  <audio id="bg-audio" preload="metadata" loop></audio>
+
+  <script>
+    const SITE_CONFIG = {
+      password: '31616112024223910967',
+
+      // Подсказка, которая отображается под полем ввода (поменяй на свою или оставь пустой '')
+      passwordHint: 'Подсказка: Собери все цифры из подсказок',
+
+      // 2. ТЕКСТЫ ПЕРВОГО ЭКРАНА
+      heroTagline: '730 дней вместе • Два года нашей истории',
+      heroTitle: 'Два года рядом с тобой',
+      heroSubtitle: 'Маленький альбом наших тёплых дней, случайных улыбок и песен, которые теперь навсегда ассоциируются с тобой',
+
+      // 3. НАСТРОЙКИ МУЗЫКИ И ВИНИЛОВОЙ ПЛАСТИНКИ
+      // Укажи путь к вашему MP3-файлу (например: 'music/our-song.mp3' или прямую ссылку).
+      // Пока файл не добавлен или недоступен, сайт автоматически включит нежную
+      // романтичную мелодию музыкальной шкатулки, чтобы всё сразу работало!
+      songUrl: 'Клюква.mp3',
+      songTitle: 'Наша песня',
+      songArtist: '2 года вместе',
+
+      // Фотография в центре виниловой пластинки (на «яблочке»)
+      vinylCoverPhoto: 'https://images.genius.com/1d17294ce7ad5bb39bc35af830dd0c74.1000x1000x1.png',
+
+      photos: [
+        { image: 'img/1.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Я отравлен тобой' },
+        { image: 'img/2.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Замени мне воздух, замени мне всё вокруг' },
+        { image: 'img/3.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'На закате наши тени издают голоса' },
+        { image: 'img/4.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Не могу держать себя в руках, когда в моей руке её рука, глупо, но это так' },
+        { image: 'img/5.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Я пущу по венам ток для того, чтобы исчезнуть, ощутив твоё тепло ещё разок' },
+        { image: 'img/6.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Мир — это война. За тихое место с тобой' },
+        { image: 'img/7.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Из сотен вершин ты одна мне не чужда' },
+        { image: 'img/8.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Мне не нужен Instagram, я помню каждый кадр' },
+        { image: 'img/9.jpg',  date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Ты сошла ко мне с неба, моё НЛО' },
+        { image: 'img/10.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Так лови же момент и встань ближе ко мне' },
+        { image: 'img/11.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Хочу обнять тебя в закате ядерного взрыва' },
+        { image: 'img/12.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Из шума сваял тебя, отныне ты в суе живешь' },
+        { image: 'img/13.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Теперь ты и есть Земля, теперь ты сама колыбель' },
+        { image: 'img/14.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Подари надежду жить, по природе колесить' },
+        { image: 'img/15.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Я кручу под лунным светом, в моих мыслях только ты' },
+        { image: 'img/16.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Я хочу быть с тобой одним целым' },
+        { image: 'img/17.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Газета Газета Газета Газета' },
+        { image: 'img/18.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Чай, чай, чаёчек, наливай кипяточек' },
+        { image: 'img/19.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Люблю тебя так же сильно, как и в день первый' },
+        { image: 'img/20.jpg', date: '', location: 'Воспоминание', shortCaption: '', backNote: 'Я слеп, но не глуп, и я слышу на запах гнилых самураев, что курят бамбук' }
+      ],
+
+      footerQuote: 'Два года — и это только начало нашей истории.'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applySiteConfig();
+      initPasswordGate();
+      initVinylAndAudio();
+      initOrbitGallery();
+      initScrollReveal();
+    });
+
+    function handleImageFallback(imgElement, labelText = 'Наше фото') {
+      imgElement.onerror = null;
+      const svgMarkup = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440">
+          <defs>
+            <linearGradient id="warmGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F6E6D9"/>
+              <stop offset="100%" stop-color="#E7C8B9"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="440" fill="url(#warmGrad)"/>
+          <circle cx="200" cy="195" r="46" fill="none" stroke="#C5A065" stroke-width="1.5" opacity="0.75"/>
+          <path d="M200 212 C200 212 182 199 182 188 C182 182 187 178 192 178 C196 178 199 180 200 183 C201 180 204 178 208 178 C213 178 218 182 218 188 C218 199 200 212 200 212 Z" fill="#D88C7E"/>
+          <text x="200" y="272" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="18" fill="#3B2F2F">${labelText}</text>
+        </svg>
+      `;
+      imgElement.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgMarkup);
+    }
+
+    function applySiteConfig() {
+      document.getElementById('hero-tagline').textContent = SITE_CONFIG.heroTagline;
+      document.getElementById('hero-title').textContent = SITE_CONFIG.heroTitle;
+      document.getElementById('hero-subtitle').textContent = SITE_CONFIG.heroSubtitle;
+
+      document.getElementById('vinyl-song-title').textContent = SITE_CONFIG.songTitle;
+      document.getElementById('vinyl-song-artist').textContent = SITE_CONFIG.songArtist;
+
+      const vinylImg = document.getElementById('vinyl-cover-img');
+      vinylImg.src = SITE_CONFIG.vinylCoverPhoto;
+      vinylImg.onerror = () => handleImageFallback(vinylImg, '2 года');
+
+      const hintEl = document.getElementById('password-hint-text');
+      hintEl.textContent = SITE_CONFIG.passwordHint || '';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function initPasswordGate() {
+      const gate = document.getElementById('password-gate');
+      const gateCard = document.getElementById('gate-card');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const errorMsg = document.getElementById('password-error');
+      const toggleVisBtn = document.getElementById('toggle-password-visibility');
+      const eyeOpen = document.getElementById('eye-icon-open');
+      const eyeClosed = document.getElementById('eye-icon-closed');
+      const hintBtn = document.getElementById('hint-toggle-btn');
+      const hintText = document.getElementById('password-hint-text');
+
+      // Переключение видимости пароля (глазик)
+      toggleVisBtn.addEventListener('click', () => {
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        eyeOpen.classList.toggle('hidden', isPassword);
+        eyeClosed.classList.toggle('hidden', !isPassword);
+        input.focus();
+      });
+
+      // Подсветка подсказки при нажатии «Нужна подсказка?»
+      hintBtn.addEventListener('click', () => {
+        hintText.classList.add('text-coffee', 'font-medium');
+        input.focus();
+      });
+
+      // Проверка введённого пароля
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const entered = input.value.trim().toLowerCase();
+        const expected = String(SITE_CONFIG.password).trim().toLowerCase();
+
+        if (entered === expected && expected.length > 0) {
+          errorMsg.classList.add('opacity-0');
+          gate.classList.add('unlocked');
+          document.body.classList.remove('locked');
+          input.blur();
+        } else {
+          errorMsg.classList.remove('opacity-0');
+          gateCard.classList.remove('shake-error');
+          // Перезапуск анимации покачивания
+          void gateCard.offsetWidth;
+          gateCard.classList.add('shake-error');
+          input.select();
+        }
+      });
+
+      input.addEventListener('input', () => {
+        if (!errorMsg.classList.contains('opacity-0')) {
+          errorMsg.classList.add('opacity-0');
+        }
+      });
+    }
+
+    /* =========================================================================
+       ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ, MP3 И РЕЗЕРВНАЯ МУЗЫКАЛЬНАЯ ШКАТУЛКА (WEB AUDIO)
+       ========================================================================= */
+    function initVinylAndAudio() {
+      const audioEl = document.getElementById('bg-audio');
+      const vinylDisc = document.getElementById('vinyl-disc');
+      const tonearm = document.getElementById('tonearm');
+      const heroPlayBtn = document.getElementById('hero-play-btn');
+      const heroPlayLabel = document.getElementById('hero-play-label');
+      const heroPlayIcon = document.getElementById('hero-play-icon');
+      const audioStatusNote = document.getElementById('audio-status-note');
+
+      const miniPlayer = document.getElementById('mini-player');
+      const miniPlayBtn = document.getElementById('mini-play-btn');
+      const miniIconPause = document.getElementById('mini-icon-pause');
+      const miniIconPlay = document.getElementById('mini-icon-play');
+      const volumeSlider = document.getElementById('volume-slider');
+      const ambientCanvas = document.getElementById('ambient-canvas');
+
+      let isPlaying = false;
+      let useFallbackSynth = false;
+      let audioTried = false;
+
+      // Настройка пути к аудиофайлу
+      if (SITE_CONFIG.songUrl && SITE_CONFIG.songUrl.trim() !== '') {
+        audioEl.src = SITE_CONFIG.songUrl;
+        audioEl.volume = parseFloat(volumeSlider.value);
+        audioEl.addEventListener('error', () => {
+          useFallbackSynth = true;
+        });
+      } else {
+        useFallbackSynth = true;
+      }
+
+      // -----------------------------------------------------------------------
+      // Встроенный генератор тёплой романтичной мелодии (Web Audio Music Box),
+      // который включается автоматически, если пользователь ещё не загрузил свой MP3
+      // -----------------------------------------------------------------------
+      const MusicBoxSynth = (() => {
+        let ctx = null;
+        let masterGain = null;
+        let timerId = null;
+        let stepIndex = 0;
+
+        // Нежная романтичная последовательность нот в фа-мажоре (частоты в Гц)
+        const melodyNotes = [
+          349.23, 440.00, 523.25, 659.25, 587.33, 523.25, // Fmaj7
+          293.66, 349.23, 440.00, 523.25, 493.88, 440.00, // Dm7
+          233.08, 349.23, 440.00, 523.25, 440.00, 349.23, // Bbmaj7
+          261.63, 392.00, 493.88, 523.25, 440.00, 392.00  // C6 / C
+        ];
+
+        function ensureContext() {
+          if (!ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            ctx = new AudioCtx();
+            masterGain = ctx.createGain();
+            masterGain.gain.value = parseFloat(volumeSlider.value) * 0.42;
+            masterGain.connect(ctx.destination);
+          }
+          if (ctx.state === 'suspended') {
+            ctx.resume();
+          }
+        }
+
+        function playBellNote(freq) {
+          if (!ctx || !masterGain) return;
+          const now = ctx.currentTime;
+
+          // Основной мягкий тон + нежный обертон на октаву выше
+          const oscMain = ctx.createOscillator();
+          const oscOver = ctx.createOscillator();
+          const noteGain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          oscMain.type = 'sine';
+          oscMain.frequency.setValueAtTime(freq, now);
+
+          oscOver.type = 'triangle';
+          oscOver.frequency.setValueAtTime(freq * 2, now);
+
+          const overGain = ctx.createGain();
+          overGain.gain.setValueAtTime(0.12, now);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1800, now);
+
+          noteGain.gain.setValueAtTime(0.0001, now);
+          noteGain.gain.linearRampToValueAtTime(0.32, now + 0.04);
+          noteGain.gain.exponentialRampToValueAtTime(0.0008, now + 2.1);
+
+          oscMain.connect(filter);
+          oscOver.connect(overGain);
+          overGain.connect(filter);
+          filter.connect(noteGain);
+          noteGain.connect(masterGain);
+
+          oscMain.start(now);
+          oscOver.start(now);
+          oscMain.stop(now + 2.2);
+          oscOver.stop(now + 2.2);
+        }
+
+        return {
+          start() {
+            ensureContext();
+            if (timerId) return;
+            playBellNote(melodyNotes[stepIndex % melodyNotes.length]);
+            stepIndex++;
+            timerId = setInterval(() => {
+              playBellNote(melodyNotes[stepIndex % melodyNotes.length]);
+              stepIndex++;
+            }, 680);
+          },
+          stop() {
+            if (timerId) {
+              clearInterval(timerId);
+              timerId = null;
+            }
+          },
+          setVolume(val) {
+            if (masterGain && ctx) {
+              masterGain.gain.setTargetAtTime(val * 0.42, ctx.currentTime, 0.05);
+            }
+          }
+        };
+      })();
+
+      // -----------------------------------------------------------------------
+      // Фоновые парящие золотистые огоньки (боке) и лепестки при воспроизведении
+      // -----------------------------------------------------------------------
+      const AmbientParticles = (() => {
+        const ctx = ambientCanvas.getContext('2d');
+        let particles = [];
+        let animId = null;
+
+        function resize() {
+          ambientCanvas.width = window.innerWidth;
+          ambientCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function createParticles() {
+          const count = window.innerWidth < 640 ? 22 : 38;
+          particles = Array.from({ length: count }, () => ({
+            x: Math.random() * ambientCanvas.width,
+            y: Math.random() * ambientCanvas.height,
+            r: 2.5 + Math.random() * 6.5,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: -0.25 - Math.random() * 0.45,
+            alpha: 0.18 + Math.random() * 0.38,
+            phase: Math.random() * Math.PI * 2,
+            isRose: Math.random() > 0.55
+          }));
+        }
+        createParticles();
+
+        function render() {
+          ctx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
+          for (const p of particles) {
+            p.x += p.vx + Math.sin(p.phase) * 0.18;
+            p.y += p.vy;
+            p.phase += 0.015;
+
+            if (p.y < -20) {
+              p.y = ambientCanvas.height + 20;
+              p.x = Math.random() * ambientCanvas.width;
+            }
+            if (p.x < -20) p.x = ambientCanvas.width + 20;
+            if (p.x > ambientCanvas.width + 20) p.x = -20;
+
+            const pulseAlpha = p.alpha * (0.75 + 0.25 * Math.sin(p.phase * 1.4));
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.2);
+            if (p.isRose) {
+              grad.addColorStop(0, `rgba(216, 140, 126, ${pulseAlpha})`);
+              grad.addColorStop(1, 'rgba(216, 140, 126, 0)');
+            } else {
+              grad.addColorStop(0, `rgba(197, 160, 101, ${pulseAlpha})`);
+              grad.addColorStop(1, 'rgba(197, 160, 101, 0)');
+            }
+
+            ctx.beginPath();
+            ctx.fillStyle = grad;
+            ctx.arc(p.x, p.y, p.r * 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          animId = requestAnimationFrame(render);
+        }
+
+        return {
+          start() {
+            ambientCanvas.classList.add('is-active');
+            if (!animId) render();
+          },
+          stop() {
+            ambientCanvas.classList.remove('is-active');
+          }
+        };
+      })();
+
+      // Обновление визуального состояния проигрывателя
+      function updatePlaybackUI(playing) {
+        isPlaying = playing;
+        vinylDisc.classList.toggle('is-playing', playing);
+        tonearm.classList.toggle('is-playing', playing);
+        miniPlayer.classList.toggle('is-visible', playing);
+
+        miniIconPause.classList.toggle('hidden', !playing);
+        miniIconPlay.classList.toggle('hidden', playing);
+
+        if (playing) {
+          heroPlayLabel.textContent = 'Наша песня звучит • Листай вниз';
+          heroPlayIcon.innerHTML = `
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16" rx="1"/>
+              <rect x="14" y="4" width="4" height="16" rx="1"/>
+            </svg>
+          `;
+          AmbientParticles.start();
+        } else {
+          heroPlayLabel.textContent = 'Включи нашу песню и листай вниз';
+          heroPlayIcon.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6,4 20,12 6,20"/>
+            </svg>
+          `;
+          AmbientParticles.stop();
+        }
+      }
+
+      async function startPlayback() {
+        if (!useFallbackSynth && !audioTried) {
+          audioTried = true;
+          try {
+            await audioEl.play();
+            audioStatusNote.textContent = '';
+            updatePlaybackUI(true);
+            return;
+          } catch (err) {
+            // Если аудиофайл по пути из SITE_CONFIG ещё не добавлен, бесшовно запускаем шкатулку
+            useFallbackSynth = true;
+          }
+        } else if (!useFallbackSynth) {
+          try {
+            await audioEl.play();
+            updatePlaybackUI(true);
+            return;
+          } catch (err) {
+            useFallbackSynth = true;
+          }
+        }
+
+        MusicBoxSynth.start();
+        audioStatusNote.textContent = 'Звучит нежная мелодия шкатулки (свой MP3 можно указать в SITE_CONFIG)';
+        updatePlaybackUI(true);
+      }
+
+      function pausePlayback() {
+        if (!useFallbackSynth) {
+          audioEl.pause();
+        }
+        MusicBoxSynth.stop();
+        updatePlaybackUI(false);
+      }
+
+      function togglePlayback() {
+        if (isPlaying) {
+          pausePlayback();
+        } else {
+          startPlayback();
+        }
+      }
+
+      heroPlayBtn.addEventListener('click', togglePlayback);
+      vinylDisc.addEventListener('click', togglePlayback);
+      vinylDisc.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          togglePlayback();
+        }
+      });
+      miniPlayBtn.addEventListener('click', togglePlayback);
+
+      volumeSlider.addEventListener('input', (e) => {
+        const vol = parseFloat(e.target.value);
+        audioEl.volume = vol;
+        MusicBoxSynth.setVolume(vol);
+      });
+    }
+
+    /* =========================================================================
+       3D ОРБИТАЛЬНАЯ ГАЛЕРЕЯ С ПЕРЕВОРОТОМ КАРТОЧЕК НА 180°
+       ========================================================================= */
+    function initOrbitGallery() {
+      const viewport = document.getElementById('carousel-viewport');
+      const stage = document.getElementById('carousel-stage');
+      const prevBtn = document.getElementById('carousel-prev-btn');
+      const nextBtn = document.getElementById('carousel-next-btn');
+      const autoBtn = document.getElementById('carousel-auto-btn');
+      const autoLabel = document.getElementById('carousel-auto-label');
+      const autoDot = document.getElementById('carousel-auto-dot');
+
+      const photos = SITE_CONFIG.photos;
+      const total = photos.length;
+      const stepDeg = 360 / total;
+
+      let currentAngle = 0;
+      let targetAngle = null;
+      let autoRotateEnabled = true;
+      let isHovering = false;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartAngle = 0;
+      let dragMovedDistance = 0;
+      let flippedIndex = null;
+      let lastFrameTime = performance.now();
+
+      // Создаём DOM-карточки для каждого воспоминания
+      const cardSlots = photos.map((item, idx) => {
+        const slot = document.createElement('div');
+        slot.className = 'polaroid-slot';
+        slot.setAttribute('role', 'button');
+        slot.setAttribute('tabindex', '0');
+        slot.setAttribute('aria-label', `Фотография ${idx + 1}: ${item.shortCaption}. Нажмите, чтобы перевернуть`);
+
+        slot.innerHTML = `
+          <div class="polaroid-flipper">
+            <div class="polaroid-face polaroid-front">
+              <div class="polaroid-photo-frame">
+                <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.shortCaption)}" loading="lazy" />
+              </div>
+              <div class="pt-3 px-1"></div>
+            </div>
+
+            <!-- ОБОРОТНАЯ СТОРОНА С ЗАМЕТКОЙ -->
+            <div class="polaroid-face polaroid-back">
+              <div class="flex items-center justify-between border-b border-antiqueGold/35 pb-2">
+                <span class="text-[10px] uppercase tracking-[0.15em] text-antiqueGold font-semibold">
+                  ${escapeHtml(item.location || 'Воспоминание')}
+                </span>
+              </div>
+
+              <div class="my-auto py-3 px-1 text-center">
+                <p class="font-hand text-2xl sm:text-[26px] text-coffee leading-[1.32]">
+                  «${escapeHtml(item.backNote)}»
+                </p>
+              </div>
+
+              <div class="pt-2 border-t border-antiqueGold/25 flex items-center justify-center gap-1.5 text-[11px] text-terracottaHover">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                </svg>
+                <span>Нажми, чтобы вернуть фото</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const img = slot.querySelector('img');
+        img.onerror = () => handleImageFallback(img, item.date || 'Наш момент');
+
+        // Клик по карточке: плавно поворачиваем её в центр и переворачиваем на 180°
+        slot.addEventListener('click', () => {
+          if (dragMovedDistance > 8) return;
+
+          const cardBaseAngle = idx * stepDeg;
+          const normalized = normalizeAngle(currentAngle + cardBaseAngle);
+
+          // Если карточка уже перевёрнута — возвращаем её лицевой стороной
+          if (flippedIndex === idx) {
+            setFlippedCard(null);
+            return;
+          }
+
+          // Доворачиваем выбранную карточку точно к зрителю (0 градусов) и переворачиваем
+          targetAngle = currentAngle - normalized;
+          setFlippedCard(idx);
+        });
+
+        stage.appendChild(slot);
+        return slot;
+      });
+
+      function setFlippedCard(index) {
+        flippedIndex = index;
+        cardSlots.forEach((slot, i) => {
+          slot.classList.toggle('is-flipped', i === index);
+        });
+      }
+
+      // Приводит угол к диапазону [-180, 180]
+      function normalizeAngle(deg) {
+        let a = ((deg + 180) % 360 + 360) % 360 - 180;
+        return a;
+      }
+
+      // Пошаговое листание кнопками «Назад» / «Вперёд»
+      function stepCarousel(direction) {
+        setFlippedCard(null);
+        const base = targetAngle !== null ? targetAngle : currentAngle;
+        const nearestSlot = Math.round(base / stepDeg) * stepDeg;
+        targetAngle = nearestSlot + direction * stepDeg;
+      }
+
+      prevBtn.addEventListener('click', () => stepCarousel(1));
+      nextBtn.addEventListener('click', () => stepCarousel(-1));
+
+      autoBtn.addEventListener('click', () => {
+        autoRotateEnabled = !autoRotateEnabled;
+        if (autoRotateEnabled) {
+          setFlippedCard(null);
+          autoLabel.textContent = 'Пауза вращения';
+          autoDot.classList.add('animate-pulse', 'bg-terracotta');
+          autoDot.classList.remove('bg-taupe/50');
+        } else {
+          autoLabel.textContent = 'Запустить вращение';
+          autoDot.classList.remove('animate-pulse', 'bg-terracotta');
+          autoDot.classList.add('bg-taupe/50');
+        }
+      });
+
+      // Пауза авто-вращения при наведении мыши
+      viewport.addEventListener('mouseenter', () => { isHovering = true; });
+      viewport.addEventListener('mouseleave', () => { isHovering = false; });
+
+      // Управление перетаскиванием мышью и свайпами на телефоне
+      viewport.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        isDragging = true;
+        targetAngle = null;
+        dragStartX = e.clientX;
+        dragStartAngle = currentAngle;
+        dragMovedDistance = 0;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - dragStartX;
+        dragMovedDistance = Math.abs(dx);
+        if (dragMovedDistance > 8 && flippedIndex !== null) {
+          setFlippedCard(null);
+        }
+        const sensitivity = window.innerWidth < 640 ? 0.36 : 0.24;
+        currentAngle = dragStartAngle + dx * sensitivity;
+      });
+
+      window.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+      window.addEventListener('pointercancel', () => {
+        isDragging = false;
+      });
+
+      // Главный цикл отрисовки 3D-позиций карточек на орбите
+      function animateOrbit(now) {
+        const dt = Math.min((now - lastFrameTime) / 1000, 0.05);
+        lastFrameTime = now;
+
+        if (!isDragging) {
+          if (targetAngle !== null) {
+            const diff = targetAngle - currentAngle;
+            if (Math.abs(diff) < 0.08) {
+              currentAngle = targetAngle;
+              targetAngle = null;
+            } else {
+              currentAngle += diff * Math.min(1, dt * 7.5);
+            }
+          } else if (autoRotateEnabled && !isHovering && flippedIndex === null) {
+            // Плавное круговое вращение галереи
+            currentAngle -= 8.5 * dt;
+          }
+        }
+
+        // Адаптивные радиусы орбиты под ширину экрана
+          const vw = viewport.clientWidth || window.innerWidth;
+          const radiusX = Math.min(vw * 0.42, 520);
+          const radiusZ = Math.min(vw * 0.30, 320);
+
+        cardSlots.forEach((slot, idx) => {
+          const deg = currentAngle + idx * stepDeg;
+          const rad = (deg * Math.PI) / 180;
+
+          const sin = Math.sin(rad);
+          const cos = Math.cos(rad); // 1 на переднем плане, -1 на заднем
+
+          const x = sin * radiusX;
+          const z = (cos - 1) * radiusZ;
+          const rotateY = sin * 26;
+          const scale = 0.6 + ((cos + 1) / 2) * 0.4;
+          const opacity = 0.15 + Math.pow((cos + 1) / 2, 1.35) * 0.85;
+          const zIndex = Math.round((cos + 1) * 100);
+
+          slot.style.transform = `translate3d(${x.toFixed(1)}px, 0px, ${z.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+          slot.style.opacity = opacity.toFixed(3);
+          slot.style.zIndex = zIndex;
+          // Задние карточки не перехватывают клики поверх передних
+          slot.style.pointerEvents = cos > -0.15 ? 'auto' : 'none';
+        });
+
+        requestAnimationFrame(animateOrbit);
+      }
+
+      requestAnimationFrame(animateOrbit);
+    }
+
+    /* =========================================================================
+       ПЛАВНОЕ ПОЯВЛЕНИЕ БЛОКОВ ПРИ ПРОКРУТКЕ (INTERSECTION OBSERVER)
+       ========================================================================= */
+    function initScrollReveal() {
+      const elements = document.querySelectorAll('.reveal-on-scroll');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.14 }
+      );
+
+      elements.forEach((el) => observer.observe(el));
+    }
+  </script>
+</body>
+</html>
